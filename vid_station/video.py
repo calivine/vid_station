@@ -7,18 +7,23 @@ class Clip:
         '60.0': {
             '1080': '13000',
             '720': '6500',
+            '640': '4600',
             '540': '4500',
             '360': '3000'
         },
         '30.0': {
             '1080': '7000',
             '720': '3500',
+            '640': '3250',
+            '568': '3000',
             '540': '2500',
+            '480': '2250',
             '360': '2000'
         },
         '25.0': {
             '1080': '6500',
             '720': '3250',
+            '640': '3000',
             '540': '2250',
             '408': '2000',
             '360': '2000'
@@ -26,6 +31,7 @@ class Clip:
         '24.0': {
             '1080': '6000',
             '720': '3000',
+            '640': '2500',
             '540': '2000',
             '360': '2000'
         }
@@ -45,8 +51,9 @@ class Clip:
         """
         print(source)
         self.source = source
-        self.clip = VideoFileClip(source).subclip(self._format_ts(start), self._format_ts(end)) if start is not None else VideoFileClip(source[6:])
+        self.clip = VideoFileClip(source).subclip(self._format_ts(start), self._format_ts(end)) if start is not None else VideoFileClip(source)
         self.fps = round(self.clip.fps, 0)
+        print(self.fps)
         self.bitrate = self.VIDEO_SIZES[str(self.fps)][str(self.clip.h)] + 'k'
         #if start is not None:
         #    dest = self._save('{}{}_c_{}'.format(start, end, source))
@@ -60,14 +67,14 @@ class Clip:
         dest:String,
             Destination file or path.
         """
-        if os.path.exists('clips'):
-            os.chdir('clips')
-        else:
+        if not os.path.exists('clips'):
             os.mkdir('clips')
-            os.chdir('clips')
-        self.clip.write_videofile(dest, bitrate=self.bitrate)
-        self.clip.close()
-        os.chdir('../')
+
+        try:
+            self.clip.write_videofile(os.path.join('clips', dest), bitrate=self.bitrate)
+            self.clip.close()
+        except OSError:
+            print('OSError')
         return dest
 
     def _format_ts(self, ts):
@@ -117,6 +124,7 @@ class GIF(Clip):
         self._save_gif()
 
     def _save_gif(self):
+        print(self.clip.filename)
         if not os.path.exists('gif'):
             os.mkdir('gif')
         self.clip.write_gif(os.path.join('gif', self.clip.filename[6:-4]+'.gif'), fps=int(self.fps))

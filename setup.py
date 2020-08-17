@@ -5,4 +5,6 @@ setup(name='vid_station',
       description='video editing cli',
       include_package_data=True,
       install_requires=['moviepy'],
-      scripts=['bin/clip'])
+      entry_points={
+            'console_scripts': ['vedit=vid_station.command_line:main'],
+      })
