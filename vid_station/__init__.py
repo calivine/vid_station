@@ -12,4 +12,9 @@ def _real_main(argv=None):
 
 
 def main(argv=None):
-    _real_main(argv)
+    try:
+        _real_main(argv)
+    except OSError:
+        sys.exit('\nERROR: OSError.')
+    except KeyboardInterrupt:
+        sys.exit('\nERROR: Interrupted by user')

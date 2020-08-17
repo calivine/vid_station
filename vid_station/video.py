@@ -49,11 +49,9 @@ class Clip:
         end:Integer,
             Ending position of clip in seconds.
         """
-        print(source)
         self.source = source
         self.clip = VideoFileClip(source).subclip(self._format_ts(start), self._format_ts(end)) if start is not None else VideoFileClip(source)
         self.fps = round(self.clip.fps, 0)
-        print(self.fps)
         self.bitrate = self.VIDEO_SIZES[str(self.fps)][str(self.clip.h)] + 'k'
         #if start is not None:
         #    dest = self._save('{}{}_c_{}'.format(start, end, source))
@@ -78,6 +76,13 @@ class Clip:
         return dest
 
     def _format_ts(self, ts):
+        """Convert timestamp from MM:SS to total seconds
+
+        Parameters
+        -------------
+        ts:Timestamp
+            Timestamp to be converted
+        """
         if ':' in str(ts):
             timestamp = ts.split(':')
             return int(timestamp[0]) * 60 + int(timestamp[1])
@@ -85,6 +90,17 @@ class Clip:
             return ts
 
     def make_time_stamps(self, amount, length, buffer):
+        """Generate set of timestamps
+
+        Parameters
+        -------------
+        amount:Integer
+            Total number of clips to make.
+        length:Integer
+            Length of each clip.
+        buffer:Integer
+            Begin grabbing timestamps BUFFER seconds into clip. 
+        """
         timestamps = []
         duration = self.clip.duration
         frequency = (duration // amount)-(length+1)
@@ -124,7 +140,6 @@ class GIF(Clip):
         self._save_gif()
 
     def _save_gif(self):
-        print(self.clip.filename)
         if not os.path.exists('gif'):
             os.mkdir('gif')
         self.clip.write_gif(os.path.join('gif', self.clip.filename[6:-4]+'.gif'), fps=int(self.fps))
@@ -140,7 +155,6 @@ class VideoEditor:
     def paste_clips(self, destination, clips):
         """Concatenate clips together into one.
         """
-        print(destination)
         final_clip = concatenate_videoclips(clips)
         final_clip.write_videofile(os.path.join('clips', destination))
         final_clip.close()
