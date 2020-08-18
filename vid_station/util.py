@@ -5,15 +5,15 @@ def generate_filename(source):
     return "comp{}_{}".format(str(random.randint(1, 10000)), source)
 
 
-def form_clip_list(input):
+def add_extension(source, ext=".mp4"):
+    return source + ext
+
+
+def form_clip_list(inpt):
     clip_list = []
-    print(input)
-    clip_list_raw = input[1:-1]
-    print(clip_list_raw)
+    clip_list_raw = inpt[1:-1]
     cll = clip_list_raw.split(",")
-    print(cll)
     cll.reverse()
-    print(cll)
     st = True
     while len(cll) > 0:
         ts = cll.pop()
@@ -24,5 +24,4 @@ def form_clip_list(input):
             end = ts
             st = True
             clip_list.append([start, end])
-    print(clip_list)
     return clip_list

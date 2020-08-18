@@ -31,6 +31,5 @@ def ProcessVideo(source, opts):
     if opts.webm:
         Webm(os.path.join('clips', source))
     if opts.gif:
-        print(source)
         GIF(os.path.join('clips', source))
 

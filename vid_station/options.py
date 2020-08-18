@@ -12,12 +12,15 @@ def parseOpts(arguments=None):
     parser.add_option("--length", action="store", dest="length", nargs=3)
     parser.add_option("-c", action="store", dest="clips")
     parser.add_option("--clips", action="store", dest="clips")
+    parser.add_option("-f", action="store", dest="batch")
+    parser.add_option("--file", action="store", dest="batch")
 
     parser.set_defaults(auto=False,
                         length=(10, 4, 0),
                         webm=False,
                         gif=False,
-                        clips=None)
+                        clips=None,
+                        batch=None)
 
-    opts,args = parser.parse_args(arguments)
+    opts, args = parser.parse_args(arguments)
     return opts
