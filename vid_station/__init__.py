@@ -3,7 +3,7 @@ import sys
 
 
 from .options import parseOpts
-from .video_editor import ProcessVideo
+from .app import ProcessVideo
 from .util import add_extension
 
 
@@ -28,7 +28,5 @@ def _real_main(argv=None):
 def main(argv=None):
     try:
         _real_main(argv)
-    except OSError:
-        sys.exit('\nERROR: OSError.')
     except KeyboardInterrupt:
         sys.exit('\nERROR: Interrupted by user')

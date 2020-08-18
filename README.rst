@@ -21,8 +21,6 @@ Options:
 
 ``-a, -auto     Auto-edit file down to summary clip.``
 
-``-b, --batch   Perform actions on a batch file. Usage: vedit -b FILE.txt OPTIONS``
+``-f, --file   Perform actions on a batch file. Usage: vedit -b FILE.txt OPTIONS``
 
 ``-c, --clips   Include custom timestamps to edit video on. Usage: vedit FILENAME -c [ts1start, ts1end, ...]``
-
-

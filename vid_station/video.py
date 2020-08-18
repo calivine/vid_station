@@ -99,7 +99,7 @@ class Clip:
         length:Integer
             Length of each clip.
         buffer:Integer
-            Begin grabbing timestamps BUFFER seconds into clip. 
+            Begin grabbing timestamps BUFFER seconds into clip.
         """
         timestamps = []
         duration = self.clip.duration
@@ -142,7 +142,9 @@ class GIF(Clip):
     def _save_gif(self):
         if not os.path.exists('gif'):
             os.mkdir('gif')
-        self.clip.write_gif(os.path.join('gif', self.clip.filename[6:-4]+'.gif'), fps=int(self.fps))
+        resized_clip = self.clip.resize(width=480)
+        resized_clip.write_gif(os.path.join('gif', self.clip.filename[6:-4]+'.gif'), fps=int(self.fps))
+
         self.clip.close()
 
 

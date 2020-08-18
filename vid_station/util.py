@@ -6,7 +6,10 @@ def generate_filename(source):
 
 
 def add_extension(source, ext=".mp4"):
-    return source + ext
+    if source.endswith(".mp4"):
+        return source
+    else:
+        return source + ext
 
 
 def form_clip_list(inpt):
