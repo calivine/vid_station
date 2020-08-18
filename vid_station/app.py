@@ -5,6 +5,7 @@ from .video_editor import Scene
 
 import sys
 import os
+import random
 
 
 def ProcessVideo(source, opts):
@@ -12,7 +13,7 @@ def ProcessVideo(source, opts):
     if opts.auto:
         source_file = Clip(source)
         # Generate series of timestamps to based edits to source file on.
-        timestamps = source_file.make_time_stamps(int(opts.length[0]), int(opts.length[1]), int(opts.buffer))
+        timestamps = source_file.make_time_stamps(int(opts.length[0]), opts.length[1], int(opts.buffer))
         source = Scene(source, timestamps).create()
     if opts.clips is not None:
         clip_list = form_clip_list(opts.clips)

@@ -1,5 +1,6 @@
 from moviepy.editor import *
 import os
+import random
 
 class Clip:
 
@@ -103,12 +104,13 @@ class Clip:
         """
         timestamps = []
         duration = self.clip.duration
-        frequency = (duration // amount)-(length+1)
+        frequency = (duration // amount)-3
         i = 0 + buffer
-        while i < duration-length:
+        while i < duration:
             i += frequency
             if i >= duration:
                 break
+            length = int(length) if length != 'r' else random.randrange(1, 5)
             timestamps.append([i, i+length])
         return timestamps
 

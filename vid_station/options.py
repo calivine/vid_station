@@ -1,4 +1,5 @@
 import optparse
+import random
 
 def parseOpts(arguments=None):
     parser = optparse.OptionParser()
