@@ -15,7 +15,7 @@ setup(name='vid_station',
       author_email='a.calog@protonmail.com',
       url='https://github.com/calivine/vid_station',
       include_package_data=True,
-      install_requires=['moviepy'],
+      install_requires=['moviepy', 'dateutil'],
       entry_points={
             'console_scripts': ['vedit=vid_station.command_line:main'],
       })

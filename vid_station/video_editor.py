@@ -1,10 +1,20 @@
+import datetime
 import random
+
+from dateutil import tz
 
 from .video import Clip, VideoEditor
 
 
 def generate_filename(source):
-    return "comp{}_{}".format(str(random.randint(1, 10000)), source)
+    localzone = tz.gettz()
+    localzone.tzname(datetime.datetime.now())
+    now = datetime.datetime.now()
+    iso = now.replace(tzinfo=localzone).isoformat()
+
+    mask = "".join(iso.split('T')[1].replace(':','').replace('.','').split('-'))
+
+    return "comp{}_{}".format(mask, source)
 
 
 def _fill_clip_list(source, ts):

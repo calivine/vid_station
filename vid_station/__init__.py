@@ -1,4 +1,5 @@
 import sys
+import datetime
 
 from .options import parse_options
 from .app import process_video
@@ -12,7 +13,10 @@ def add_extension(source, ext=".mp4"):
 
 
 def _real_main(argv=None):
+    # Get command options
     opts = parse_options(argv)
+
+    # If this is a batch file, run process video on each filename.
     if opts.batch is not None:
         f = open(opts.batch, 'r')
         i = 0
