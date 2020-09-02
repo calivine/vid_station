@@ -1,7 +1,7 @@
 import optparse
-import random
 
-def parseOpts(arguments=None):
+
+def parse_options(arguments=None):
     parser = optparse.OptionParser()
     parser.add_option("-a", action="store_true", dest="auto")
     parser.add_option("--auto", action="store_true", dest="auto")

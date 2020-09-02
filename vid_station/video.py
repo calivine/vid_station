@@ -1,6 +1,7 @@
-from moviepy.editor import *
-import os
 import random
+
+from moviepy.editor import *
+
 
 class Clip:
 
@@ -26,6 +27,7 @@ class Clip:
             '720': '3250',
             '640': '3000',
             '540': '2250',
+            '480': '2000',
             '408': '2000',
             '360': '2000'
         },
@@ -34,6 +36,7 @@ class Clip:
             '720': '3000',
             '640': '2500',
             '540': '2000',
+            '480': '2000',
             '360': '2000'
         }
     }

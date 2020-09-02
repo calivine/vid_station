@@ -1,14 +1,29 @@
+import os
+
 from .video import Clip, Webm, GIF
 from .config import *
-from .util import generate_filename, form_clip_list
 from .video_editor import Scene
 
-import sys
-import os
-import random
+
+def form_clip_list(inpt):
+    clip_list = []
+    clip_list_raw = inpt[1:-1]
+    cll = clip_list_raw.split(",")
+    cll.reverse()
+    st = True
+    while len(cll) > 0:
+        ts = cll.pop()
+        if st:
+            start = ts
+            st = False
+        else:
+            end = ts
+            st = True
+            clip_list.append([start, end])
+    return clip_list
 
 
-def ProcessVideo(source, opts):
+def process_video(source, opts):
     os.chdir(SOURCE_DIR)
     if opts.auto:
         source_file = Clip(source)

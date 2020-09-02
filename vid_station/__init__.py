@@ -1,14 +1,18 @@
-import os
 import sys
 
+from .options import parse_options
+from .app import process_video
 
-from .options import parseOpts
-from .app import ProcessVideo
-from .util import add_extension
+
+def add_extension(source, ext=".mp4"):
+    if source.endswith(".mp4"):
+        return source
+    else:
+        return source + ext
 
 
 def _real_main(argv=None):
-    opts = parseOpts(argv)
+    opts = parse_options(argv)
     if opts.batch is not None:
         f = open(opts.batch, 'r')
         i = 0
@@ -18,11 +22,11 @@ def _real_main(argv=None):
                 break
             filename = add_extension(line[:-1])
             print(str(i), filename)
-            ProcessVideo(filename, opts)
+            process_video(filename, opts)
             i += 1
         f.close()
     else:
-        ProcessVideo(add_extension(argv[1]), opts)
+        process_video(add_extension(argv[1]), opts)
 
 
 def main(argv=None):
