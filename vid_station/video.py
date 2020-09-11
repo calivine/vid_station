@@ -1,4 +1,7 @@
+import datetime
 import random
+
+from dateutil import tz
 
 from moviepy.editor import *
 
@@ -20,7 +23,10 @@ class Clip:
             '568': '3000',
             '540': '2500',
             '480': '2250',
+            '384': '2100',
             '360': '2000',
+            '352': '1990',
+            '320': '1850',
             '240': '1800',
         },
         '25.0': {
@@ -30,6 +36,7 @@ class Clip:
             '540': '2250',
             '480': '2000',
             '408': '2000',
+            '392': '2000',
             '360': '2000'
         },
         '24.0': {
@@ -38,7 +45,8 @@ class Clip:
             '640': '2500',
             '540': '2000',
             '480': '2000',
-            '360': '2000'
+            '360': '2000',
+            '352': '1990',
         }
     }
 
@@ -54,11 +62,13 @@ class Clip:
         end:Integer,
             Ending position of clip in seconds.
         """
+        start = self._format_ts(start)
+        end = self._format_ts(end)
         self.source = source
-        self.clip = VideoFileClip(source).subclip(self._format_ts(start), self._format_ts(end)) if start is not None else VideoFileClip(source)
+        self.clip = VideoFileClip(source).subclip(start, end) if start is not None else VideoFileClip(source)
         self.fps = round(self.clip.fps, 0)
         self.bitrate = self.VIDEO_SIZES[str(self.fps)][str(self.clip.h)] + 'k'
-        #if start is not None:
+        # if start is not None:
         #    dest = self._save('{}{}_c_{}'.format(start, end, source))
         #    self.clip = VideoFileClip(dest)
 
@@ -70,11 +80,9 @@ class Clip:
         dest:String,
             Destination file or path.
         """
-        if not os.path.exists('clips'):
-            os.mkdir('clips')
 
         try:
-            self.clip.write_videofile(os.path.join('clips', dest), bitrate=self.bitrate)
+            self.clip.write_videofile(dest, bitrate=self.bitrate)
             self.clip.close()
         except OSError:
             print('OSError')
@@ -110,9 +118,9 @@ class Clip:
         duration = self.clip.duration
         frequency = (duration // amount)-3
         i = 0 + buffer
-        while i < duration:
+        while i < duration-5:
             i += frequency
-            if i >= duration:
+            if i >= duration-5:
                 break
             length = int(length) if length != 'r' else random.randrange(1, 5)
             timestamps.append([i, i+length])
@@ -135,7 +143,7 @@ class Webm(Clip):
         if not os.path.exists('webm'):
             os.mkdir('webm')
 
-        self.clip.write_videofile(os.path.join('webm', self.clip.filename[6:-4]+'.webm'), fps=int(self.fps), bitrate=self.bitrate)
+        self.clip.write_videofile(self.clip.filename[6:-4]+'.webm', fps=int(self.fps), bitrate=self.bitrate)
         self.clip.close()
 
 
@@ -154,15 +162,42 @@ class GIF(Clip):
         self.clip.close()
 
 
-class VideoEditor:
+def paste_clips(destination, clips):
+    """Concatenate clips.
+    """
+    final_clip = concatenate_videoclips(clips)
+    final_clip.write_videofile(destination[6:-4]+'.mp4')
+    final_clip.close()
+    # Close open clip connections.
+    for clip in clips:
+        clip.close()
 
-    def __init__(self):
-        if not os.path.exists('clips'):
-            os.mkdir('clips')
 
-    def paste_clips(self, destination, clips):
-        """Concatenate clips together into one.
-        """
-        final_clip = concatenate_videoclips(clips)
-        final_clip.write_videofile(os.path.join('clips', destination))
-        final_clip.close()
+def generate_filename(source):
+    localzone = tz.gettz()
+    localzone.tzname(datetime.datetime.now())
+    now = datetime.datetime.now()
+    iso = now.replace(tzinfo=localzone).isoformat()
+    mask = "".join(iso.split('T')[1].replace(':', '').replace('.', '').split('-'))
+    return "{}_{}".format(mask, source)
+
+
+def _fill_clip_list(source, ts):
+    to_be_processed = []
+    for c in ts:
+        new_clip = Clip(source, c[0], c[1])
+        to_be_processed.append(new_clip.clip)
+    return to_be_processed
+
+
+class Scene:
+
+    def __init__(self, source, timestamps):
+        self.source = source
+        self.clips = _fill_clip_list(source, timestamps)
+
+    def create(self):
+        new_file = generate_filename(self.source)
+
+        paste_clips(new_file, self.clips)
+        return new_file[6:-4]+'.mp4'

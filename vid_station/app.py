@@ -1,8 +1,7 @@
 import os
 
-from .video import Clip, Webm, GIF
+from .video import Clip, Webm, GIF, Scene
 from .config import *
-from .video_editor import Scene
 
 
 def form_clip_list(inpt):
@@ -24,16 +23,19 @@ def form_clip_list(inpt):
 
 
 def process_video(source, opts):
-    os.chdir(SOURCE_DIR)
+    # os.chdir(SOURCE_DIR)
     if opts.auto:
         source_file = Clip(source)
         # Generate series of timestamps to based edits to source file on.
         timestamps = source_file.make_time_stamps(int(opts.length[0]), opts.length[1], int(opts.buffer))
+        if opts.verbose:
+            print(timestamps)
+            print(int(opts.length[0]), opts.length[1], int(opts.buffer))
         source = Scene(source, timestamps).create()
     if opts.clips is not None:
         clip_list = form_clip_list(opts.clips)
         source = Scene(source, clip_list).create()
     if opts.webm:
-        Webm(os.path.join('clips', source))
+        Webm(source)
     if opts.gif:
         GIF(os.path.join('clips', source))

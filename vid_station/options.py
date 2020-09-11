@@ -17,14 +17,17 @@ def parse_options(arguments=None):
     parser.add_option("--file", action="store", dest="batch")
     parser.add_option("-b", action="store", dest="buffer")
     parser.add_option("--buffer", action="store", dest="buffer")
+    parser.add_option("-v", action="store_true", dest="verbose")
+    parser.add_option("--verbose", action="store_true", dest="verbose")
 
     parser.set_defaults(auto=False,
-                        length=(10, 4),
+                        length=(10, 6),
                         webm=False,
                         gif=False,
                         clips=None,
                         batch=None,
-                        buffer=0)
+                        buffer=0,
+                        verbose=False)
 
     opts, args = parser.parse_args(arguments)
     return opts
