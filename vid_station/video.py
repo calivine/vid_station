@@ -5,8 +5,9 @@ from dateutil import tz
 
 from moviepy.editor import *
 
+# Change class name to ImportVideo.
 
-class Clip:
+class ImportVideo:
 
     VIDEO_SIZES = {
         '60.0': {
@@ -127,7 +128,7 @@ class Clip:
         return timestamps
 
 
-class Webm(Clip):
+class Webm(ImportVideo):
 
     def __init__(self, source, start=None, end=None):
         """Make webm file with source video.
@@ -140,22 +141,17 @@ class Webm(Clip):
         self._save_webm()
 
     def _save_webm(self):
-        if not os.path.exists('webm'):
-            os.mkdir('webm')
-
         self.clip.write_videofile(self.clip.filename[6:-4]+'.webm', fps=int(self.fps), bitrate=self.bitrate)
         self.clip.close()
 
 
-class GIF(Clip):
+class GIF(ImportVideo):
 
     def __init__(self, source, start=None, end=None):
         Clip.__init__(self, source, start, end)
         self._save_gif()
 
     def _save_gif(self):
-        if not os.path.exists('gif'):
-            os.mkdir('gif')
         resized_clip = self.clip.resize(width=480)
         resized_clip.write_gif(os.path.join('gif', self.clip.filename[6:-4]+'.gif'), fps=int(self.fps))
 
@@ -185,7 +181,7 @@ def generate_filename(source):
 def _fill_clip_list(source, ts):
     to_be_processed = []
     for c in ts:
-        new_clip = Clip(source, c[0], c[1])
+        new_clip = ImportVideo(source, c[0], c[1])
         to_be_processed.append(new_clip.clip)
     return to_be_processed
 
