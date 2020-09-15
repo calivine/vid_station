@@ -1,5 +1,5 @@
 from .video import ImportVideo, Scene, Webm
-from .utils import form_clip_list
+from .utils import form_clip_list, add_extension
 
 
 class RapidClip:
@@ -15,6 +15,9 @@ class RapidClip:
         """
         self.options = options['opts']
         self.source = options['source']
+        if self.options.verbose:
+            print(self.options)
+
 
     def process(self):
         """
@@ -23,10 +26,13 @@ class RapidClip:
         if self.options.auto:
             source_file = ImportVideo(self.source)
             # Generate series of timestamps to based edits to source file on.
-            timestamps = source_file.make_time_stamps(int(self.options.length[0]), self.options.length[1], int(self.options.buffer))
+            total_clips = int(self.options.length[0])
+            clip_length = self.options.length[1]
+            buffer = int(self.options.buffer)
+            timestamps = source_file.make_time_stamps(total_clips, clip_length, buffer)
             if self.options.verbose:
                 print(timestamps)
-                print(int(self.options.length[0]), self.options.length[1], int(self.options.buffer))
+                print(total_clips, clip_length, buffer)
             source = Scene(self.source, timestamps).create()
         if self.options.clips is not None:
             clip_list = form_clip_list(self.options.clips)
@@ -35,3 +41,16 @@ class RapidClip:
             Webm(self.source)
         if self.options.gif:
             GIF(self.source)
+
+    def process_batch(self):
+        f = open(self.options.batch, 'r')
+        i = 0
+        while True:
+            line = f.readline()
+            if not line:
+                break
+            self.source = add_extension(line[:-1])
+            print(str(i), self.source)
+            self.process()
+            i += 1
+        f.close()

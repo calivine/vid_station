@@ -141,7 +141,8 @@ class Webm(ImportVideo):
         self._save_webm()
 
     def _save_webm(self):
-        self.clip.write_videofile(self.clip.filename[6:-4]+'.webm', fps=int(self.fps), bitrate=self.bitrate)
+        output = self.clip.filename[6:-4]+'.webm'
+        self.clip.write_videofile(output, fps=int(self.fps), bitrate=self.bitrate)
         self.clip.close()
 
 
@@ -153,8 +154,8 @@ class GIF(ImportVideo):
 
     def _save_gif(self):
         resized_clip = self.clip.resize(width=480)
-        resized_clip.write_gif(os.path.join('gif', self.clip.filename[6:-4]+'.gif'), fps=int(self.fps))
-
+        output = self.clip.filename[6:-4]+'.gif'
+        resized_clip.write_gif(output, fps=int(self.fps))
         self.clip.close()
 
 
